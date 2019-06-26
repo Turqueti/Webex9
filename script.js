@@ -3,8 +3,20 @@ var sect = document.getElementById('section');
 var btn = document.querySelector('button');
 
 
+function prepareUrl(){
+    var requestUrl = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='initialDate'&@dataFinalCotacao='finalDate'&$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao";
+    var initialDate = document.getElementById("dataInicial").value;
+    var finalDate = document.getElementById("dataFinal").value;
+    console.log(initialDate);
+    var newRequest = requestUrl.replace("initialDate",initialDate);
+    var newRequest2 = newRequest.replace("finalDate",finalDate);
+    console.log(newRequest2);
+    return(newRequest2);
+}
+
+
 function getJson(){
-    var requestUrl = '../Dollar.json';
+    var requestUrl = prepareUrl();
     var request = new XMLHttpRequest();
     request.open('GET',requestUrl,true);
     request.responseType = 'json';
@@ -30,7 +42,6 @@ function test(jsonObj){
 }
 
 function myFunction() {
-    var resposta = getJson();
     var valores = resposta['value'];
 
     console.log(resposta);
