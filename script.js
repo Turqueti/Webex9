@@ -4,9 +4,9 @@ var btn = document.querySelector('button');
 
 
 function prepareUrl(){
-    var requestUrl = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='initialDate'&@dataFinalCotacao='finalDate'&$top=100&$orderby=cotacaoCompra%20desc&$format=json&$select=cotacaoCompra,dataHoraCotacao ";
+    var requestUrl = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='initialDate'&@dataFinalCotacao='finalDate'&$top=100&$orderby=cotacaoCompra%20desc&$format=json&$select=cotationValue,dataHoraCotacao ";
     var newRequest = urlDates(requestUrl);
-    //newRequest = urlCompraVenda(newRequest);
+    newRequest = urlCompraVenda(newRequest);
 
     console.log(newRequest);
     return(newRequest);
@@ -22,9 +22,9 @@ function urlDates(requestUrl){
 
 function urlCompraVenda(requestUrl){
     var newRequest;
-    if (document.getElementById("rdCompra").checked) {
+    if (document.getElementById('rdCompra').checked) {
         newRequest = requestUrl.replace("cotationValue","cotacaoCompra");
-    }else if(document.getElementById("rdVenda").checked){
+    }else if(document.getElementById('rdVenda').checked){
         newRequest = requestUrl.replace("cotationValue","cotacaoVenda");
     }
     return(newRequest);
