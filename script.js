@@ -4,9 +4,10 @@ var btn = document.querySelector('button');
 
 
 function prepareUrl(){
-    var requestUrl = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='initialDate'&@dataFinalCotacao='finalDate'&$top=100&$orderby=cotacaoCompra%20desc&$format=json&$select=cotationValue,dataHoraCotacao ";
+    var requestUrl = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='initialDate'&@dataFinalCotacao='finalDate'&$top=100&$orderby=cotationValue%20OrderBy&$format=json&$select=cotationValue,dataHoraCotacao ";
     var newRequest = urlDates(requestUrl);
     newRequest = urlCompraVenda(newRequest);
+    newRequest = urlOrder(newRequest);
 
     console.log(newRequest);
     return(newRequest);
@@ -24,13 +25,23 @@ function urlCompraVenda(requestUrl){
     var newRequest;
     if (document.getElementById('rdCompra').checked) {
         newRequest = requestUrl.replace("cotationValue","cotacaoCompra");
+        newRequest = newRequest.replace("cotationValue","cotacaoCompra");
     }else if(document.getElementById('rdVenda').checked){
         newRequest = requestUrl.replace("cotationValue","cotacaoVenda");
+        newRequest = newRequest.replace("cotationValue","cotacaoVenda");
     }
     return(newRequest);
 }
 
-function urlOrder(requestUr){}
+function urlOrder(requestUrl){
+    var newRequest;
+    if (document.getElementById('rdMaior').checked) {
+        newRequest = requestUrl.replace("OrderBy","desc");
+    }else if(document.getElementById('rdMenor').checked){
+        newRequest = requestUrl.replace("OrderBy","asc");
+    }
+    return(newRequest);
+}
 
 function getJson(){
     var requestUrl = prepareUrl();
