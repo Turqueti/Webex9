@@ -4,16 +4,33 @@ var btn = document.querySelector('button');
 
 
 function prepareUrl(){
-    var requestUrl = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='initialDate'&@dataFinalCotacao='finalDate'&$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao";
-    var initialDate = document.getElementById("dataInicial").value;
-    var finalDate = document.getElementById("dataFinal").value;
-    console.log(initialDate);
-    var newRequest = requestUrl.replace("initialDate",initialDate);
-    var newRequest2 = newRequest.replace("finalDate",finalDate);
-    console.log(newRequest2);
-    return(newRequest2);
+    var requestUrl = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='initialDate'&@dataFinalCotacao='finalDate'&$top=100&$orderby=cotacaoCompra%20desc&$format=json&$select=cotacaoCompra,dataHoraCotacao ";
+    var newRequest = urlDates(requestUrl);
+    //newRequest = urlCompraVenda(newRequest);
+
+    console.log(newRequest);
+    return(newRequest);
 }
 
+function urlDates(requestUrl){
+    var initialDate = document.getElementById("dataInicial").value;
+    var finalDate = document.getElementById("dataFinal").value;
+    var newRequest = requestUrl.replace("initialDate",initialDate);
+    newRequest = newRequest.replace("finalDate",finalDate);
+    return(newRequest);
+}
+
+function urlCompraVenda(requestUrl){
+    var newRequest;
+    if (document.getElementById("rdCompra").checked) {
+        newRequest = requestUrl.replace("cotationValue","cotacaoCompra");
+    }else if(document.getElementById("rdVenda").checked){
+        newRequest = requestUrl.replace("cotationValue","cotacaoVenda");
+    }
+    return(newRequest);
+}
+
+function urlOrder(requestUr){}
 
 function getJson(){
     var requestUrl = prepareUrl();
@@ -56,7 +73,8 @@ function createTable(jsonObj){
     var values = jsonObj['value'];
 
     var table = document.createElement("table");
-    
+
+
     var heading = document.createElement("tr");
     var headingFirstCol = document.createElement("th");
     var headingSecondCol = document.createElement("th");
@@ -98,3 +116,41 @@ function createTable(jsonObj){
 
 }
 
+
+function createOutputCompra(jsonObj){
+    var values = jsonObj['value'];
+
+    var table = document.createElement("table");
+    
+    var heading = document.createElement("tr");
+    var headingFirstCol = document.createElement("th");
+    var headingSecondCol = document.createElement("th");
+
+    headingFirstCol.textContent = 'valor de Compra';
+    headingSecondCol.textContent = 'data';
+
+    heading.appendChild(headingFirstCol);
+    heading.appendChild(headingSecondCol);
+
+    table.appendChild(heading);
+
+    for(var i = 0; i < values.length ; i++){
+
+        var firstCol = document.createElement("td");
+        var secondCol = document.createElement("td");
+
+        firstCol.textContent = values[i].cotacaoCompra;
+        secondCol.textContent = values[i].dataHoraCotacao;
+
+        
+        var newLine = document.createElement("tr");
+        newLine.appendChild(firstCol);
+        newLine.appendChild(secondCol);
+        table.appendChild(newLine);
+        
+
+    }
+
+
+    sect.appendChild(table);
+}
