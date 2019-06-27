@@ -43,17 +43,31 @@ function urlOrder(requestUrl){
     return(newRequest);
 }
 
+function clearScreen(){
+    var child = sect.lastElementChild;  
+        while (child) { 
+            sect.removeChild(child); 
+            child = sect.lastElementChild; 
+        } 
+}
+
 function getJson(){
     var requestUrl = prepareUrl();
     var request = new XMLHttpRequest();
     request.open('GET',requestUrl,true);
     request.responseType = 'json';
     request.send();
+    
+    clearScreen();
 
     request.onload = function(){
         //console.log(request.response);
-        createTable(request.response);
-        
+        //createTable(request.response);
+        if (document.getElementById('rdCompra').checked) {
+            createOutputCompra(request.response);
+        }else if(document.getElementById('rdVenda').checked){
+            createOutputVenda(request.response);
+        }
     }
     
 }
@@ -164,4 +178,45 @@ function createOutputCompra(jsonObj){
 
 
     sect.appendChild(table);
+}
+
+function createOutputVenda(jsonObj){
+    var values = jsonObj['value'];
+
+    var table = document.createElement("table");
+
+
+    var heading = document.createElement("tr");
+    var headingFirstCol = document.createElement("th");
+    var headingSecondCol = document.createElement("th");
+
+    headingFirstCol.textContent = 'valor de Venda';
+    headingSecondCol.textContent = 'data';
+
+    heading.appendChild(headingFirstCol);
+    heading.appendChild(headingSecondCol);
+
+    table.appendChild(heading);
+
+    for(var i = 0; i < values.length ; i++){
+
+        var firstCol = document.createElement("td");
+        var secondCol = document.createElement("td");
+
+        firstCol.textContent = values[i].cotacaoVenda;
+        secondCol.textContent = values[i].dataHoraCotacao;
+
+        
+        var newLine = document.createElement("tr");
+        newLine.appendChild(firstCol);
+        newLine.appendChild(secondCol);
+        table.appendChild(newLine);
+        //console.log('entrou');
+        
+
+    }
+
+
+    sect.appendChild(table);
+
 }
